@@ -28,3 +28,6 @@ def home():
 def login():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg)
+
+if __name__ == "__main__":
+    app.run("0.0.0.0", port=5000, debug=True)
