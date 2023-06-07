@@ -1,5 +1,5 @@
 body {
-    background-color: RGBA(232, 52, 78, 0.2);
+    background-color: RGBA(2, 48, 71, 1);
     min-height: 100vh;
   }
   
@@ -12,6 +12,7 @@ body {
   .title {
     font-weight: 800;
     font-size: 5rem;
+    font-family: 'Lobster', cursive;
   }
   
   .subtitle {
@@ -19,19 +20,19 @@ body {
   }
   
   .is-sparta {
-    color: #e8344e !important;
+    color: #fff !important;
   }
   
   .button.is-sparta {
-    background-color: #e8344e;
+    background-color: #023047;
     border-color: transparent;
     color: #fff !important;
   }
   
   .button.is-sparta.is-outlined {
     background-color: transparent;
-    border-color: #e8344e;
-    color: #e8344e !important;
+    border-color: #023047;
+    color: #023047 !important;
   }
   
   .help {
