@@ -35,24 +35,24 @@ def sign_in():
     password_receive = request.form["password_give"]
 
     pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
-    result = db.users.find_one( 
+    result = db.users.find_one(
         {
             "username": username_receive,
-            "password": pw_hash, 
+            "password": pw_hash,
         }
     )
     if result:
         payload = {
-            "id": username_receive, 
+            "id": username_receive,
             # the token will be valid for 24 hours
             "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),#ini 24 jam
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256") 
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
         return jsonify(
             {
                 "result": "success",
-                "token": token, 
+                "token": token,
             }
         )
     else:
