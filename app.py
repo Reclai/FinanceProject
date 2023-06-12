@@ -29,6 +29,22 @@ def login():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg)
 
+@app.route("/user/<username>")
+def user(username):
+    # an endpoint for retrieving a user's profile information
+    # and all of their posts
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        # if this is my own profile, True
+        # if this is somebody else's profile, False
+        status = username == payload["id"]
+
+        user_info = db.users.find_one({"username": username}, {"_id": False})
+        return render_template("user.html", user_info=user_info, status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 @app.route("/sign_in", methods=["POST"])
 def sign_in():
     username_receive = request.form["username_give"]
@@ -86,6 +102,80 @@ def check_dup():
     username_recieve = request.form.get('username_give')
     exists = bool(db.users.find_one({'username': username_recieve}))
     return jsonify({'result': 'success', 'exists': exists})
+
+@app.route("/update_profile", methods=["POST"])
+def save_img():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {
+            "profile_name": name_receive,
+            "profile_info": about_receive}
+
+        if "file_give" in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+
+        db.users.update_one(
+            {"username": payload["id"]},
+            {"$set": new_doc})
+        return jsonify({"result": "success", "msg": "Profile updated!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/transaction")
+def transaction():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        user_info = db.users.find_one({"username": payload["id"]})
+        return render_template("transaction.html", user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="Your token has expired"))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="There was problem logging you in"))
+
+@app.route("/addTransaction", methods=["POST"])
+def addTransaction():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+
+        # Retrieve data from form
+        category_receive = request.form["category"]
+        amount_receive = request.form["amount"]
+        description_receive = request.form["description"]
+
+        # Get current date
+        current_date = datetime.now()
+
+        # Construct transaction object
+        transaction = {
+            "username": payload["id"],
+            "category": category_receive,
+            "amount": float(amount_receive),  # make sure amount is stored as a float/integer
+            "description": description_receive,
+            "date": current_date
+        }
+
+        # Insert the transaction into the database
+        db.transactions.insert_one(transaction)
+
+        return jsonify({"result": "success", "msg": "Transaction added successfully!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
