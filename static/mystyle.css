@@ -1,5 +1,8 @@
+* {
+  font-family: 'Poppins', sans-serif;
+}
 body {
-    background-color: RGBA(2, 48, 71, 1);
+    background-color:#2660a4;
     min-height: 100vh;
   }
   
@@ -20,19 +23,19 @@ body {
   }
   
   .is-sparta {
-    color: #fff !important;
+    color: #edf7f6 !important;
   }
   
   .button.is-sparta {
-    background-color: #023047;
+    background-color: #2660a4;
     border-color: transparent;
     color: #fff !important;
   }
   
   .button.is-sparta.is-outlined {
     background-color: transparent;
-    border-color: #023047;
-    color: #023047 !important;
+    border-color: #2660a4;
+    color: #2660a4 !important;
   }
   
   .help {
