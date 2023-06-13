@@ -61,7 +61,7 @@ def sign_in():
         payload = {
             "id": username_receive,
             # the token will be valid for 24 hours
-            "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),#ini 24 jam
+            "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),  # ini 24 jam
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
 
@@ -89,10 +89,13 @@ def sign_up():
     doc = {
         "username": username_receive,                               # id
         "password": password_hash,                                  # password
-        "profile_name": username_receive,                           # user's name is set to their id by default
-        "profile_pic": "",                                          # profile image file name
-        "profile_pic_real": "profile_pics/profile_placeholder.png", # a default profile image
-        "profile_info": ""                                          # a profile description
+        # user's name is set to their id by default
+        "profile_name": username_receive,
+        # profile image file name
+        "profile_pic": "",
+        "profile_pic_real": "profile_pics/profile_placeholder.png",  # a default profile image
+        # a profile description
+        "profile_info": ""
     }
     db.users.insert_one(doc)
     return jsonify({'result': 'success'})
@@ -109,11 +112,15 @@ def save_img():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
-        name_receive = request.form["name_give"]
-        about_receive = request.form["about_give"]
+        name_receive = request.form["username_give"]
+        password_receive = request.form["password_give"]
+        password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+        print(f"Username received: {name_receive}")
+        print(f"Password received: {password_receive}")
         new_doc = {
+            "password": password_hash,
             "profile_name": name_receive,
-            "profile_info": about_receive}
+            }
 
         if "file_give" in request.files:
             file = request.files["file_give"]
@@ -161,7 +168,7 @@ def addTransaction():
         transaction = {
             "username": payload["id"],
             "category": category_receive,
-            "amount": float(amount_receive),  # make sure amount is stored as a float/integer
+            "amount": float(amount_receive), # make sure amount is stored as a float/integer
             "description": description_receive,
             "date": current_date
         }
