@@ -189,41 +189,50 @@
     </style>
 
     <script>
-      function sign_out() {
-        $.removeCookie("mytoken", { path: "/" });
-        alert("Logged out!");
-        window.location.href = "/login";
-      }
+        function cancel() {
+            window.location.replace("/");
+        }
+        function contact() {
+            let first_name = $("#first_name").val();
+            let last_name = $("#last_name").val();
+            let email = $("#email").val();
+            let mobile = $("#mobile").val();
+            let message = $("#message").val();
+            if (first_name == '' || last_name == '') {
+                alert('Insert your Name');
+            } else if (email.includes('@', '.')) {
+                if (mobile == '') {
+                    alert('Insert a valid phone number');
+                } else if (message == '') {
+                    alert('Message cannot be empty');
+                } else {
+                    let form_data = new FormData();
+                    form_data.append("first_name", first_name);
+                    form_data.append("last_name", last_name);
+                    form_data.append("email", email);
+                    form_data.append("mobile", mobile);
+                    form_data.append("message", message);
+                    console.log(first_name, last_name, email, mobile, message, form_data);
 
-      function contact() {
-        let first_name = $("#first_name").val();
-        let last_name = $("#last_name").val();
-        let email = $("#email").val();
-        let mobile = $("#mobile").val();
-        let message = $("#message").val();
-        let form_data = new FormData();
-        form_data.append("first_name_give", first_name);
-        form_data.append("last_name_give", last_name);
-        form_data.append("email_give", email);
-        form_data.append("mobile_give", mobile);
-        form_data.append("message_give", message);
-        console.log(first_name, last_name, email, mobile, message, form_data);
-
-        $.ajax({
-          type: "POST",
-          url: "/contact",
-          data: form_data,
-          cache: false,
-          contentType: false,
-          processData: false,
-          success: function (response) {
-            if (response["result"] === "success") {
-              alert(response["msg"]);
-              window.location.reload();
+                    $.ajax({
+                        type: "POST",
+                        url: "/addContact",
+                        data: form_data,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            if (response["result"] === "success") {
+                                alert(response["msg"]);
+                                window.location.replace("/");
+                            }
+                        },
+                    });
+                }
+            } else {
+                alert('Insert a valid email address');
             }
-          },
-        });
-      }
+        }
     </script>
   </head>
   <body>
@@ -269,7 +278,7 @@
               <div class="row100">
                 <div class="inputBox"></div>
                 <button type="button" class="btn btn-primary" onclick="contact()">Submit</button>
-                <button class="btn btn-outline-danger" onclick="sign_out()">Log Out</button>
+                <button class="btn btn-outline-danger" onclick="cancel()">Cancel</button>
               </div>
             </div>
           </form>
