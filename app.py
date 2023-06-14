@@ -180,9 +180,33 @@ def addTransaction():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-@app.route("/contact")
+@app.route("/contact", methods=['POST'])
 def contact():
-    return render_template("contact.html")
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        email = request.form.get('email')
+        mobile = request.form.get('mobile')
+        message = request.form.get('message')
+
+        # Process the form data (e.g., send emails, store in a database, etc.)
+        # Here, we'll simply print the data to the console
+        contact = {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'mobile': mobile,
+            'message': message
+        }
+        db.contact.insert_one(contact)
+
+        # Return a JSON response
+        return jsonify({'message': 'Form submitted successfully'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
