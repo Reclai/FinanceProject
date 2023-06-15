@@ -14,6 +14,15 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!--ADD datatable style cdn-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <!--JQUERY-->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <!--Adding datatables cdn-->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!--Adding fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
@@ -200,7 +209,7 @@
         .dash-content .title {
             display: flex;
             align-items: center;
-            margin: 10px 0 30px 0;
+            margin: 10px 0 15px 0;
         }
 
         .dash-content .title i {
@@ -222,15 +231,19 @@
             color: black;
             /* margin-left: 10px; */
         }
-        
+
         .logo_name {
             font-family: 'Lobster', cursive;
         }
-        .maindish{
-            font-size: 18px;
-        }
     </style>
     <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "lengthMenu": [5,10]
+            });
+        });
+
+
         document.addEventListener("DOMContentLoaded", function () {
             const sidebarToggle = document.querySelector(".sidebar-toggle");
 
@@ -311,38 +324,66 @@
             <div class="dash-content ms-3">
                 <div class="overview">
                     <div class="title">
-                        <span class="text">Update Profile</span>
+                        <span class="text">History Transaction</span>
                     </div>
                 </div>
 
-                <div class="maindish">
-                    <div class="mb-3 row">
-                        <label for="displayName" class="col-sm-2 col-form-label">Display Name</label>
-                        <div class="col-sm-10">
-                            <!-- <input type="text" readonly class="form-control-plaintext" id="displayName"
-                                value="username"> -->
-                                <input type="text" class="form-control" id="displayname" value="{{ user_info.profile_name }}">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label"> New Password</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">Confirm New Password</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword">
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-primary mt-5" style="background-color: #203590;">Save</button>
+                <div class="mainview">
+                    <table id="example" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>12,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>15,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>10,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>10,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>10,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-06</td>
+                                <td>Transportation</td>
+                                <td>Naik Angkot</td>
+                                <td>10,000</td>
+                                <td><button class="btn btn-danger">Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
