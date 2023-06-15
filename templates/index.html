@@ -334,6 +334,14 @@
             alert('You are signed out!');
             window.location.href = '/login';
         }
+
+		function add_transaction() {
+			let type = $('#inputGroupSelect01').val();
+			let description = $('#input_description').val();
+			let amount = $('#input_amount').val();
+			var amounts = parseInt(amount);
+			alert(type)
+		}
 	</script>
 </head>
 
@@ -395,7 +403,7 @@
 										<form>
 											<div class="mb-3">
 												<label class="form-label">Amount</label>
-												<input type="number" class="form-control">
+												<input type="number" class="form-control" id="input_amount">
 											</div>
 											<div class="mb-3">
 												<label class="form-label">Type</label>
@@ -403,20 +411,32 @@
 													<!-- <label class="input-group-text" for="inputGroupSelect01">Options</label> -->
 													<select class="form-select" id="inputGroupSelect01">
 													  <option selected>Choose...</option>
-													  <option value="1">One</option>
-													  <option value="2">Two</option>
-													  <option value="3">Three</option>
+													  <option value="1">Food & Beverage</option>
+													  <option value="2">Transportation</option>
+													  <option value="3">Internet Bill</option>
+													  <option value="4">Water Bill</option>
+													  <option value="5">Electricity Bill</option>
+													  <option value="6">Vehicle Maintenance</option>
+													  <option value="7">Medical Check Up</option>
+													  <option value="8">Medical Check Up</option>
+													  <option value="9">Insurance</option>
+													  <option value="10">Education</option>
+													  <option value="11">Fitness</option>
+													  <option value="12">Makeup</option>
+													  <option value="13">Fun Money</option>
+													  <option value="14">Investment</option>
+													  <option value="14">Other Expense</option>
 													</select>
 												  </div>
 											</div>
 											<div class="mb-3">
 												<label class="form-label">Description</label>
-												<textarea class="form-control"></textarea>
+												<textarea class="form-control" id="input_description"></textarea>
 											</div>
 										</form>
 									</div>
 									<div class="modal-footer">
-										<button type="submit" class="btn btn-primary" style="background-color: #203590;">Save</button>
+										<button type="submit" class="btn btn-primary" style="background-color: #203590;" onclick="add_transaction()">Save</button>
 									</div>
 								</div>
 							</div>
