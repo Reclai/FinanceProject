@@ -23,17 +23,17 @@ def home():
 
         # Prepare the data for the template
         dates = []
-        types = []
+        category = []
         descriptions = []
         amounts = []
 
         for transaction in transactions:
             dates.append(transaction['date'])
-            types.append(transaction['type'])
+            category.append(transaction['category'])
             descriptions.append(transaction['description'])
             amounts.append(transaction['amount'])
 
-        return render_template('index.html', user_info=user_info, dates=dates, types=types, descriptions=descriptions, amounts=amounts)
+        return render_template('index.html', user_info=user_info, dates=dates, category=category, descriptions=descriptions, amounts=amounts)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -170,11 +170,11 @@ def addTransaction():
     token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-
-        # Retrieve data from form
-        category_receive = request.form["category"]
-        amount_receive = request.form["amount"]
-        description_receive = request.form["description"]
+        # Retrieve JSON data from the request
+        data = request.get_json()
+        category_receive = data["category"]
+        description_receive = data["description"]
+        amount_receive = data["amount"]
 
         # Get current date
         current_date = datetime.now()
@@ -183,8 +183,8 @@ def addTransaction():
         transaction = {
             "username": payload["id"],
             "category": category_receive,
-            "amount": float(amount_receive), # make sure amount is stored as a float/integer
             "description": description_receive,
+            "amount": float(amount_receive),  # make sure amount is stored as a float/integer
             "date": current_date
         }
 
