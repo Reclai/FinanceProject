@@ -19,7 +19,7 @@ def home():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
         # Fetch the latest 4 transactions sorted by date
-        transactions = db.transactions.find().sort('date', -1).limit(4)
+        transactions = db.transactions.find({"username": payload["id"]}).sort([('date', -1), ('username', 1)]).limit(4)
 
         # Prepare the data for the template
         dates = []
