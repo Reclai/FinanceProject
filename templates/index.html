@@ -330,7 +330,7 @@
 		});
 
 		function sign_out() {
-            $.removeCookie('mytoken', { path: '/' }); 
+            $.removeCookie('mytoken', { path: '/' });
             alert('You are signed out!');
             window.location.href = '/login';
         }
@@ -444,7 +444,7 @@
 					</div>
 				</div>
 			</div>
-	
+
 			<div class="dash-content ms-3">
 				<div class="overview">
 					<div class="title">
@@ -482,34 +482,31 @@
 					<div class="activity-data">
 						<div class="data date">
 							<span class="data-title">Date</span>
-							<span class="data-list">2023-06-06</span>
-							<span class="data-list">2023-06-06</span>
-							<span class="data-list">2023-06-06</span>
-							<span class="data-list">2023-06-06</span>
+							{% for date in dates %}
+							<span class="data-list">{{ date }}</span>
+							{% endfor %}
 						</div>
 						<div class="data type">
 							<span class="data-title">Type</span>
-							<span class="data-list">Transportation</span>
-							<span class="data-list">Transportation</span>
-							<span class="data-list">Transportation</span>
-							<span class="data-list">Transportation</span>
+							{% for type in types %}
+							<span class="data-list">{{ type }}</span>
+							{% endfor %}
 						</div>
 						<div class="data desc">
 							<span class="data-title">Description</span>
-							<span class="data-list">Naik Angkot</span>
-							<span class="data-list">Naik Angkot</span>
-							<span class="data-list">Naik Angkot</span>
-							<span class="data-list">Naik Angkot</span>
+							{% for desc in descriptions %}
+							<span class="data-list">{{ desc }}</span>
+							{% endfor %}
 						</div>
 						<div class="data amount">
 							<span class="data-title">Amount</span>
-							<span class="data-list">10,000</span>
-							<span class="data-list">10,000</span>
-							<span class="data-list">10,000</span>
-							<span class="data-list">10,000</span>
+							{% for amount in amounts %}
+							<span class="data-list">{{ amount }}</span>
+							{% endfor %}
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</section>
 	</div>

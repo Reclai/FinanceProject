@@ -18,7 +18,19 @@ def home():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
-        return render_template("index.html", user_info=user_info)
+        # Fetch the latest 4 transactions sorted by date
+        transactions = db.transactions.find().sort('date', -1).limit(4)
+        # Prepare the data for the template
+        dates = []
+        types = []
+        descriptions = []
+        amounts = []
+        for transaction in transactions:
+            dates.append(transaction['date'])
+            types.append(transaction['type'])
+            descriptions.append(transaction['description'])
+            amounts.append(transaction['amount'])
+        return render_template('index.html', dates=dates, types=types, descriptions=descriptions, amounts=amounts)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
@@ -191,7 +203,7 @@ def contact():
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="There was problem logging you in"))
-    
+
 @app.route("/history")
 def history():
     token_receive = request.cookies.get("mytoken")
@@ -203,7 +215,7 @@ def history():
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="There was problem logging you in"))
-    
+
 
 @app.route("/addContact", methods=['POST'])
 def addContact():
