@@ -269,6 +269,20 @@
             alert('You are signed out!');
             window.location.href = '/login';
         }
+
+        function deleteTransaction(transactionId) {
+            $.ajax({
+                type: 'POST',
+                url: '/deleteTransaction',
+                data: {
+                    transactionId: transactionId
+                },
+                success: function (response) {
+                    alert(response['msg']);
+                    window.location.reload();
+                }
+            })
+        }
     </script>
 </head>
 
@@ -337,14 +351,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            {% for transaction in transactions %}
                             <tr>
-                                <td>2023-06-06</td>
-                                <td>Transportation</td>
-                                <td>Naik Angkot</td>
-                                <td>12,000</td>
-                                <td><button class="btn btn-danger">Delete</button></td>
+                                <td>{{ transaction.date }}</td>
+                                <td>{{ transaction.category }}</td>
+                                <td>{{ transaction.description }}</td>
+                                <td>Rp. {{ "{:,.0f}".format(transaction.amount) }}</td>
+                                <td><button class="btn btn-danger" onclick="deleteTransaction('{{ transaction.transaction_id }}')">Delete</button></td>
                             </tr>
-                            <tr>
+                            {% endfor %}
+                            <!-- <tr>
                                 <td>2023-06-06</td>
                                 <td>Transportation</td>
                                 <td>Naik Angkot</td>
@@ -378,7 +394,7 @@
                                 <td>Naik Angkot</td>
                                 <td>10,000</td>
                                 <td><button class="btn btn-danger">Delete</button></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>

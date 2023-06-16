@@ -194,13 +194,29 @@ def addTransaction():
             "category": category_receive,
             "description": description_receive,
             "amount": float(amount_receive),  # make sure amount is stored as a float/integer
-            "transaction_id": current_date
+            "transaction_id": str(current_date)
         }
 
         # Insert the transaction into the database
         db.transactions.insert_one(transaction)
 
         return jsonify({"result": "success", "msg": "Transaction added successfully!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/deleteTransaction", methods=["POST"])
+def deleteTransaction():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        transaction_id = request.form.get('transactionId')
+
+        # Delete the transaction
+        result = db.transactions.delete_one({"username": payload["id"], "transaction_id": transaction_id})
+        if result.deleted_count == 1:
+            return jsonify({"result": "success", "msg": "Transaction has been deleted!"})
+        else:
+            return jsonify({"result": "fail", "msg": "Transaction not found or unable to delete."})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
@@ -222,7 +238,8 @@ def history():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         user_info = db.users.find_one({"username": payload["id"]})
-        return render_template("history.html", user_info=user_info)
+        transactions = list(db.transactions.find({"username": payload["id"]},{'_id':False}))
+        return render_template("history.html", user_info=user_info, transactions=transactions)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
