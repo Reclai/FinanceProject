@@ -504,7 +504,7 @@
 						<div class="data date">
 							<span class="data-title">Date</span>
 							{% for date in dates %}
-							<span class="data-list">{{ date }}</span>
+							<span class="data-list">{{ date.strftime('%Y-%m-%d') }}</span>
 							{% endfor %}
 						</div>
 						<div class="data type">
