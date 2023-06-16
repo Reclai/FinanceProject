@@ -122,34 +122,41 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 @app.route("/update_profile", methods=["POST"])
-def save_img():
+def update_profile():
     token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
-        name_receive = request.form["username_give"]
-        password_receive = request.form["password_give"]
-        password_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-        print(f"Username received: {name_receive}")
-        print(f"Password received: {password_receive}")
-        new_doc = {
-            "password": password_hash,
-            "profile_name": name_receive,
-            }
+        display_name_receive = request.form["displayname"]
+        password_receive = request.form["inputPassword"]
+        new_password_receive = request.form["newPassword"]
+        confirm_new_password_receive = request.form["confirmNewPassword"]
 
-        if "file_give" in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/" + file_path)
-            new_doc["profile_pic"] = filename
-            new_doc["profile_pic_real"] = file_path
+        if display_name_receive.strip() == "":
+            return jsonify({"result": "fail", "msg": "Please enter a valid display name"})
 
-        db.users.update_one(
-            {"username": payload["id"]},
-            {"$set": new_doc})
-        return jsonify({"result": "success", "msg": "Profile updated!"})
+        if password_receive.strip() == "" and new_password_receive.strip() == "" and confirm_new_password_receive.strip() == "":
+            # Only updating the display name
+            db.users.update_one(
+                {"username": username},
+                {"$set": {"profile_name": display_name_receive}}
+            )
+            return jsonify({"result": "success", "msg": "Display name updated successfully"})
+
+        if password_receive.strip() != "" and new_password_receive.strip() != "" and confirm_new_password_receive.strip() != "":
+            # Updating password and display name
+            if new_password_receive != confirm_new_password_receive:
+                return jsonify({"result": "fail", "msg": "New passwords do not match"})
+
+            # Update the password in the database
+            password_hash = hashlib.sha256(new_password_receive.encode("utf-8")).hexdigest()
+            db.users.update_one(
+                {"username": username},
+                {"$set": {"password": password_hash, "profile_name": display_name_receive}}
+            )
+            return jsonify({"result": "success", "msg": "Display name and password updated successfully"})
+
+        return jsonify({"result": "fail", "msg": "Please fill in all password fields"})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 

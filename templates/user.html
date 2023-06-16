@@ -132,8 +132,8 @@
 
         .dashboard {
             /*position: relative;
-			margin-left: 250px;
-			min-height: 100vh;*/
+            margin-left: 250px;
+            min-height: 100vh;*/
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -222,11 +222,12 @@
             color: black;
             /* margin-left: 10px; */
         }
-        
+
         .logo_name {
             font-family: 'Lobster', cursive;
         }
-        .maindish{
+
+        .maindish {
             font-size: 18px;
         }
     </style>
@@ -259,6 +260,38 @@
             alert('You are signed out!');
             window.location.href = '/login';
         }
+
+        function updateProfile() {
+            const displayName = document.getElementById("displayname").value;
+            const password = document.getElementById("inputPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+
+            // Create an object with the form data
+            const formData = {
+                displayname: displayName,
+                inputPassword: password,
+                newPassword: newPassword,
+                confirmNewPassword: confirmNewPassword
+            };
+
+            // Send an AJAX request to the server
+            $.ajax({
+                url: "/update_profile",
+                type: "POST",
+                data: formData,
+                success: function (response) {
+                    alert(response.msg);
+                    if (response.result === "success") {
+                        window.location.reload
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
     </script>
 </head>
 
@@ -314,6 +347,7 @@
                         <span class="text">Update Profile</span>
                     </div>
                 </div>
+                <h6>Leave Passwords Blank if you want to only change your username</h6>
 
                 <div class="maindish">
                     <div class="mb-3 row">
@@ -321,28 +355,28 @@
                         <div class="col-sm-10">
                             <!-- <input type="text" readonly class="form-control-plaintext" id="displayName"
                                 value="username"> -->
-                                <input type="text" class="form-control" id="displayname" value="{{ user_info.profile_name }}">
+                            <input type="text" class="form-control" id="displayname" value="{{ user_info.profile_name }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Old Password</label>
                         <div class="col-sm-10">
                             <input type="password" class="form-control" id="inputPassword">
                         </div>
                     </div>
                     <div class="mb-3 row">
-                        <label for="inputPassword" class="col-sm-2 col-form-label"> New Password</label>
+                        <label for="inputPassword" class="col-sm-2 col-form-label">New Password</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword">
+                            <input type="password" class="form-control" id="newPassword">
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="inputPassword" class="col-sm-2 col-form-label">Confirm New Password</label>
                         <div class="col-sm-10">
-                            <input type="password" class="form-control" id="inputPassword">
+                            <input type="password" class="form-control" id="confirmNewPassword">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary mt-5" style="background-color: #203590;">Save</button>
+                    <button type="button" class="btn btn-primary mt-5" style="background-color: #203590;" onclick="updateProfile()">Save</button>
                 </div>
             </div>
         </section>
