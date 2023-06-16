@@ -192,9 +192,6 @@
     </style>
 
     <script>
-        function cancel() {
-            window.location.href="/";
-        }
         function contact() {
             let first_name = $("#first_name").val();
             let last_name = $("#last_name").val();
@@ -227,7 +224,7 @@
                         success: function (response) {
                             if (response["result"] === "success") {
                                 alert(response["msg"]);
-                                window.location.replace("/");
+                                window.location.href = '/';
                             }
                         },
                     });
@@ -280,8 +277,8 @@
 
               <div class="row100">
                 <div class="inputBox"></div>
-                <button type="button" class="btn btn-primary" onclick="contact()">Submit</button>
-                <button class="btn btn-outline-danger" onclick="cancel()">Cancel</button>
+                <a type="button" class="btn btn-primary" onclick="contact()" href="/">Submit</a>
+                <a class="btn btn-outline-danger" href="/">Cancel</a>
               </div>
             </div>
           </form>

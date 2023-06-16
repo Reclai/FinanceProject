@@ -172,6 +172,7 @@ def addTransaction():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         # Retrieve JSON data from the request
         data = request.get_json()
+        date_receive = data["date"]
         category_receive = data["category"]
         description_receive = data["description"]
         amount_receive = data["amount"]
@@ -182,10 +183,11 @@ def addTransaction():
         # Construct transaction object
         transaction = {
             "username": payload["id"],
+            "date": date_receive,
             "category": category_receive,
             "description": description_receive,
             "amount": float(amount_receive),  # make sure amount is stored as a float/integer
-            "date": current_date
+            "transaction_id": current_date
         }
 
         # Insert the transaction into the database
