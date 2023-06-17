@@ -4,7 +4,7 @@ import datetime
 import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 client = MongoClient("mongodb+srv://test:sparta@pymongolx.npweo5y.mongodb.net/?retryWrites=true&w=majority")
 db = client["FinanceProject"]
@@ -183,6 +183,7 @@ def addTransaction():
         category_receive = data["category"]
         description_receive = data["description"]
         amount_receive = data["amount"]
+        date_datetime = datetime.strptime(date_receive, '%Y-%m-%d')
 
         # Get current date
         current_date = datetime.now()
@@ -190,7 +191,7 @@ def addTransaction():
         # Construct transaction object
         transaction = {
             "username": payload["id"],
-            "date": date_receive,
+            "date": date_datetime,
             "category": category_receive,
             "description": description_receive,
             "amount": float(amount_receive),  # make sure amount is stored as a float/integer
