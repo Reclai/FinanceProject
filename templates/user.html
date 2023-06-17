@@ -18,12 +18,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
 
         html {
@@ -41,7 +43,7 @@
             height: 100% !important;
             width: 250px;
             padding: 10px 14px;
-            background-color: #230462;
+            background-color: #264653;
             border-right: 1px solid #e6e5e5;
             transition: width 0.3s;
         }
@@ -283,7 +285,8 @@
                 success: function (response) {
                     alert(response.msg);
                     if (response.result === "success") {
-                        window.location.reload
+                        $.removeCookie('mytoken', { path: '/' });
+                        window.location.href = '/login';
                     }
                 },
                 error: function (error) {
@@ -347,15 +350,16 @@
                         <span class="text">Update Profile</span>
                     </div>
                 </div>
-                <h6>Leave Passwords Blank if you want to only change your username</h6>
+                <h6>Leave passwords blank if you want to only change your username</h6>
 
-                <div class="maindish">
+                <div class="maindish mt-5">
                     <div class="mb-3 row">
                         <label for="displayName" class="col-sm-2 col-form-label">Display Name</label>
                         <div class="col-sm-10">
                             <!-- <input type="text" readonly class="form-control-plaintext" id="displayName"
                                 value="username"> -->
-                            <input type="text" class="form-control" id="displayname" value="{{ user_info.profile_name }}">
+                            <input type="text" class="form-control" id="displayname"
+                                value="{{ user_info.profile_name }}">
                         </div>
                     </div>
                     <div class="mb-3 row">
@@ -376,7 +380,8 @@
                             <input type="password" class="form-control" id="confirmNewPassword">
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary mt-5" style="background-color: #203590;" onclick="updateProfile()">Save</button>
+                    <button type="button" class="btn btn-primary mt-5" style="background-color: #2a9d8f;"
+                        onclick="updateProfile()">Save</button>
                 </div>
             </div>
         </section>

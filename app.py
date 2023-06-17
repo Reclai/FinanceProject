@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import jwt
+import calendar
 import datetime
 import hashlib
 from flask import Flask, render_template, jsonify, request, redirect, url_for
@@ -27,13 +28,60 @@ def home():
         descriptions = []
         amounts = []
 
+        current_datetime = datetime.now()
+
+        first_day_of_month = current_datetime.replace(day=1)
+
+        # Print the modified datetime
+        # print(first_day_of_month)
+        # print(first_day_of_month.year)
+
+        first_day_of_next_month = current_datetime.replace(day=1) + timedelta(days=32)
+
+        # Set the month to the next month
+        next_month = first_day_of_next_month.replace(day=1)
+
+        # Print the modified datetime
+        # print(next_month)
+
+
+        start_date = datetime(first_day_of_month.year, first_day_of_month.month, first_day_of_month.day)
+        end_date = datetime(first_day_of_next_month.year, first_day_of_next_month.month, first_day_of_next_month.day)
+
+        # Buat permintaan pencarian
+        query = {
+            'date': {
+            '$gte': start_date,
+            '$lt': end_date
+            }
+        }   
+
+        # Lakukan pencarian
+        results = db.transactions.find(query)
+        
+        # print(results)
+        total_month = 0
+        for month in results:
+            if month["username"] == payload['id']:
+                total_month += month['amount']
+        
+        times = current_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+        today_db = db.transactions.find({"date": times})
+        total_day = 0
+        if today_db:
+            for today in today_db:
+                if today["username"] == payload["id"]:
+                    total_day += today['amount']
+
+        total_all = 0        
         for transaction in transactions:
             dates.append(transaction['date'])
             category.append(transaction['category'])
             descriptions.append(transaction['description'])
             amounts.append(transaction['amount'])
+            total_all += transaction['amount']
 
-        return render_template('index.html', user_info=user_info, dates=dates, category=category, descriptions=descriptions, amounts=amounts)
+        return render_template('index.html', user_info=user_info,month=total_month,today=total_day,total_all=total_all, dates=dates, category=category, descriptions=descriptions, amounts=amounts)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="Your token has expired"))
     except jwt.exceptions.DecodeError:
