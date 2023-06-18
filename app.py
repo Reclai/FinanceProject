@@ -54,17 +54,17 @@ def home():
             '$gte': start_date,
             '$lt': end_date
             }
-        }   
+        }
 
         # Lakukan pencarian
         results = db.transactions.find(query)
-        
+
         # print(results)
         total_month = 0
         for month in results:
             if month["username"] == payload['id']:
                 total_month += month['amount']
-        
+
         times = current_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
         today_db = db.transactions.find({"date": times})
         total_day = 0
@@ -73,7 +73,7 @@ def home():
                 if today["username"] == payload["id"]:
                     total_day += today['amount']
 
-        total_all = 0        
+        total_all = 0
         for transaction in transactions:
             dates.append(transaction['date'])
             category.append(transaction['category'])
@@ -176,14 +176,21 @@ def update_profile():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
         display_name_receive = request.form["displayname"]
-        password_receive = request.form["inputPassword"]
+        old_password_receive = request.form["inputPassword"]
         new_password_receive = request.form["newPassword"]
         confirm_new_password_receive = request.form["confirmNewPassword"]
 
         if display_name_receive.strip() == "":
             return jsonify({"result": "fail", "msg": "Please enter a valid display name"})
 
-        if password_receive.strip() == "" and new_password_receive.strip() == "" and confirm_new_password_receive.strip() == "":
+        if old_password_receive.strip() != "":
+            # Check if the old password is correct
+            user = db.users.find_one({"username": username})
+            old_password_hash = hashlib.sha256(old_password_receive.encode("utf-8")).hexdigest()
+            if user["password"] != old_password_hash:
+                return jsonify({"result": "fail", "msg": "Incorrect old password"})
+
+        if old_password_receive.strip() == "" and new_password_receive.strip() == "" and confirm_new_password_receive.strip() == "":
             # Only updating the display name
             db.users.update_one(
                 {"username": username},
@@ -191,7 +198,7 @@ def update_profile():
             )
             return jsonify({"result": "success", "msg": "Display name updated successfully"})
 
-        if password_receive.strip() != "" and new_password_receive.strip() != "" and confirm_new_password_receive.strip() != "":
+        if old_password_receive.strip() != "" or new_password_receive.strip() != "" or confirm_new_password_receive.strip() != "":
             # Updating password and display name
             if new_password_receive != confirm_new_password_receive:
                 return jsonify({"result": "fail", "msg": "New passwords do not match"})
