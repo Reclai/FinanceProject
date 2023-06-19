@@ -326,7 +326,7 @@ def addContact():
         db.contact.insert_one(contact)
 
         # Return a JSON response
-        return jsonify({'message': 'Form submitted successfully'})
+        return jsonify({'result': 'success', 'msg': 'Form submitted successfully'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
